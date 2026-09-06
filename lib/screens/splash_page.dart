@@ -8,24 +8,90 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends State<SplashPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late List<Animation<double>> _dotAnimations;
+
+  final double _dotHeight = 10;
+  final double _minWidth = 10;
+  final double _maxWidth = 26;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 4), () {
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat();
+
+    _dotAnimations = List.generate(3, (index) {
+      final double start = index * 0.2;
+      final double end = start + 0.5;
+
+      return TweenSequence<double>([
+        TweenSequenceItem(
+          tween: Tween(
+            begin: _minWidth,
+            end: _maxWidth,
+          ).chain(CurveTween(curve: Curves.easeInOut)),
+          weight: 50,
+        ),
+        TweenSequenceItem(
+          tween: Tween(
+            begin: _maxWidth,
+            end: _minWidth,
+          ).chain(CurveTween(curve: Curves.easeInOut)),
+          weight: 50,
+        ),
+      ]).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Interval(start, end, curve: Curves.linear),
+        ),
+      );
+    });
+
+    Future.delayed(const Duration(seconds: 4), () {
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 800),
           pageBuilder: (context, animation, secondaryAnimation) =>
-              const LoginPage(),
+              const LoginScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
         ),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _buildDot(int index) {
+    return AnimatedBuilder(
+      animation: _dotAnimations[index],
+      builder: (context, child) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Container(
+            width: _dotAnimations[index].value,
+            height: _dotHeight,
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(_dotHeight / 2),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -36,9 +102,12 @@ class _SplashPageState extends State<SplashPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //const LogoAnimation(imagePath: 'images/logo5.png', width: 150),
             Image(image: AssetImage('images/logo.png'), width: 150),
             const SizedBox(height: 60),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(3, (index) => _buildDot(index)),
+            ),
           ],
         ),
       ),
