@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.red,
+                    color: Color.fromARGB(255, 194, 47, 36),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -172,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: const Text(
                       'Forgot Password?',
-                      style: TextStyle(color: Colors.red),
+                      style: TextStyle(color: Color.fromARGB(255, 194, 47, 36)),
                     ),
                   ),
                 ),
@@ -182,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: _handleLogin,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.red,
+                    backgroundColor: const Color.fromARGB(255, 194, 47, 36),
                     foregroundColor: Colors.white,
                   ),
                   child: const Text('Login', style: TextStyle(fontSize: 16)),
@@ -206,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text(
                         'Sign Up',
                         style: TextStyle(
-                          color: Colors.red,
+                          color: Color.fromARGB(255, 194, 47, 36),
                           fontWeight: FontWeight.bold,
                         ),
                       ),

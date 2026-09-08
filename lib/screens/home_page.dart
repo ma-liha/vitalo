@@ -113,19 +113,15 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 20),
 
-              // Donor Status / Register CTA Banner
               DonorStatusBanner(onNavigateToProfile: _navigateToProfile),
               const SizedBox(height: 24),
 
-              // Quick Blood Finder Chips
               const QuickBloodFinder(),
               const SizedBox(height: 24),
 
-              // 2x2 Quick Actions Dashboard Grid
               const QuickActionsGrid(),
               const SizedBox(height: 26),
 
-              // Urgent Blood Requests Feed
               const UrgentRequestsSection(),
             ],
           ),

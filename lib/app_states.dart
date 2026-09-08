@@ -1,6 +1,5 @@
 class AppState {
   static bool isDonor = false;
-
   static String? donorName;
   static String? donorBloodGroup;
   static DateTime? donorDateOfBirth;

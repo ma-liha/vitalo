@@ -63,7 +63,6 @@ class _EligibleDonorsPageState extends State<EligibleDonorsPage> {
       ),
       body: Column(
         children: [
-          // Horizontal blood group filter chips
           Container(
             padding: const EdgeInsets.symmetric(vertical: 12),
             color: Colors.grey.shade50,
@@ -80,8 +79,9 @@ class _EligibleDonorsPageState extends State<EligibleDonorsPage> {
                         type,
                         style: TextStyle(
                           color: isSelected ? Colors.white : Colors.black87,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                         ),
                       ),
                       selected: isSelected,
@@ -108,7 +108,6 @@ class _EligibleDonorsPageState extends State<EligibleDonorsPage> {
           ),
           const Divider(height: 1),
 
-          // Donors List
           Expanded(
             child: filtered.isEmpty
                 ? Center(
@@ -220,10 +219,7 @@ class _EligibleDonorsPageState extends State<EligibleDonorsPage> {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
-                donor.name,
-                style: const TextStyle(fontSize: 18),
-              ),
+              child: Text(donor.name, style: const TextStyle(fontSize: 18)),
             ),
           ],
         ),

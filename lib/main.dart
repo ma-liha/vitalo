@@ -13,10 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Vitalo',
-      theme: ThemeData(
-        fontFamily: 'Inter',
-        useMaterial3: true,
-      ),
+      theme: ThemeData(fontFamily: 'Inter', useMaterial3: true),
       home: const SplashPage(),
     );
   }
