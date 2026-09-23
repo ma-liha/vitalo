@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vitalo/create_donor_profile/eligibility.dart';
+import 'package:vitalo/services/auth_service.dart';
+import 'package:vitalo/app_states.dart';
+import 'login_page.dart';
 
 class DonorProfilePage extends StatelessWidget {
   final String name;
@@ -117,6 +120,80 @@ class DonorProfilePage extends StatelessWidget {
                     ),
                     _InfoRow(icon: Icons.wc_outlined, label: 'Sex', value: sex),
                   ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+            Center(
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Row(
+                        children: [
+                          Icon(Icons.logout_rounded, color: Colors.red),
+                          SizedBox(width: 8),
+                          Text('Log Out'),
+                        ],
+                      ),
+                      content: const Text(
+                        'Are you sure you want to log out of Vitalo?',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            await AuthService().signOut();
+                            AppState.isDonor = false;
+                            AppState.donorName = null;
+                            AppState.donorBloodGroup = null;
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Logged out successfully'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                              (route) => false,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Log Out'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.logout_rounded, color: Colors.red),
+                label: const Text(
+                  'Log Out',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.red),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ),
