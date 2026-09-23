@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:vitalo/services/auth_service.dart';
+import 'package:vitalo/app_states.dart';
+import 'home_page.dart';
 import 'login_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -55,12 +58,25 @@ class _SplashPageState extends State<SplashPage>
 
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
+
+      final user = AuthService().currentUser;
+      final Widget targetScreen;
+
+      if (user != null) {
+        if (user.displayName != null && user.displayName!.isNotEmpty) {
+          AppState.donorName = user.displayName;
+        }
+        targetScreen = const HomePage();
+      } else {
+        targetScreen = const LoginScreen();
+      }
+
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 800),
           pageBuilder: (context, animation, secondaryAnimation) =>
-              const LoginScreen(),
+              targetScreen,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },

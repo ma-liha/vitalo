@@ -11,7 +11,13 @@ class AuthService {
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   // Current user
-  User? get currentUser => _auth.currentUser;
+  User? get currentUser {
+    try {
+      return _auth.currentUser;
+    } catch (_) {
+      return null;
+    }
+  }
 
   // Sign up with Email and Password
   Future<UserCredential> signUp({
