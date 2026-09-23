@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'donor_profile.dart';
+
 import 'package:vitalo/create_donor_profile/eligibility.dart';
 import 'package:vitalo/create_donor_profile/last_donation.dart';
 import 'package:vitalo/app_states.dart';
+
 import 'package:vitalo/create_profile_info/app_text_field.dart';
 import 'package:vitalo/create_profile_info/app_dropdown_field.dart';
 import 'package:vitalo/create_profile_info/date_picker_field.dart';
@@ -40,6 +42,7 @@ class _CreateProfileState extends State<CreateProfile> {
     'O+',
     'O-',
   ];
+
   static const _sexOptions = ['Male', 'Female', 'Other'];
 
   @override
