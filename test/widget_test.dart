@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vitalo/screens/home_page.dart';
 import 'package:vitalo/screens/login_page.dart';
+import 'package:vitalo/screens/signup_page.dart';
 
 void main() {
   testWidgets('HomePage smoke, modal sheets and navigation test',
@@ -81,6 +82,10 @@ void main() {
 
   testWidgets('LoginScreen renders red Vitalo title, forgot password and sign up',
       (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(() => tester.view.reset());
+
     await tester.pumpWidget(
       const MaterialApp(
         home: LoginScreen(),
@@ -103,5 +108,46 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Reset Password'), findsNothing);
+
+    // Test tapping Sign Up navigates to SignupScreen
+    await tester.tap(find.text('Sign Up'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Create an Account'), findsOneWidget);
+    expect(find.text('Full Name'), findsOneWidget);
+    expect(find.text('Email Address'), findsOneWidget);
+    expect(find.text('Blood Group'), findsOneWidget);
+    expect(find.text('Password'), findsOneWidget);
+    expect(find.text('Confirm Password'), findsOneWidget);
+
+    // Test tapping Log In navigates back to LoginScreen
+    await tester.tap(find.text('Log In'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Vitalo'), findsOneWidget);
+  });
+
+  testWidgets('SignupScreen validates empty form fields',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(() => tester.view.reset());
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: SignupScreen(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Tap Sign Up with empty form
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Sign Up'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Please enter your full name'), findsOneWidget);
+    expect(find.text('Please enter your email'), findsOneWidget);
+    expect(find.text('Please select your blood group'), findsOneWidget);
+    expect(find.text('Please enter your password'), findsOneWidget);
+    expect(find.text('Please confirm your password'), findsOneWidget);
   });
 }

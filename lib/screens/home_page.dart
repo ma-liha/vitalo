@@ -7,6 +7,8 @@ import 'package:vitalo/home_page/quick_blood_finder.dart';
 import 'package:vitalo/home_page/urgent_requests_section.dart';
 import 'create_profile.dart';
 import 'donor_profile.dart';
+import 'login_page.dart';
+import 'package:vitalo/services/auth_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,6 +41,54 @@ class _HomePageState extends State<HomePage> {
         MaterialPageRoute(builder: (context) => const CreateProfile()),
       ).then((_) => setState(() {}));
     }
+  }
+
+  void _confirmLogout() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.logout_rounded, color: Colors.red),
+            SizedBox(width: 8),
+            Text('Log Out'),
+          ],
+        ),
+        content: const Text('Are you sure you want to log out of Vitalo?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await AuthService().signOut();
+              AppState.isDonor = false;
+              AppState.donorName = null;
+              AppState.donorBloodGroup = null;
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Logged out successfully'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (route) => false,
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Log Out'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -85,7 +135,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () => HomeSheets.showNotifications(context),
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 14.0, left: 4),
+            padding: const EdgeInsets.only(right: 4.0, left: 4),
             child: GestureDetector(
               onTap: _navigateToProfile,
               child: const CircleAvatar(
@@ -98,6 +148,12 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: Colors.white),
+            tooltip: 'Log Out',
+            onPressed: _confirmLogout,
+          ),
+          const SizedBox(width: 4),
         ],
       ),
       body: SafeArea(
