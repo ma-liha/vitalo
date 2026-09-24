@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:vitalo/services/auth_service.dart';
+import 'package:vitalo/app_states.dart';
 import 'home_page.dart';
+import 'signup_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,9 +13,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final AuthService _authService = AuthService();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -21,12 +27,43 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() {
-    if (_formKey.currentState!.validate()) {
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final cred = await _authService.logIn(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      if (cred.user?.displayName != null &&
+          cred.user!.displayName!.isNotEmpty) {
+        AppState.donorName = cred.user!.displayName;
+      }
+
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AuthService.parseAuthError(e)),
+          backgroundColor: const Color(0xFFCD3024),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -50,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 194, 47, 36),
+                    color: Color(0xFFC22F24),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -81,12 +118,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-                  maxLength: 8,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     prefixIcon: const Icon(Icons.lock_outline),
                     border: const OutlineInputBorder(),
-                    counterText: '',
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword
@@ -104,8 +139,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
                     }
-                    if (value.length != 8) {
-                      return 'Password must be exactly 8 characters';
+                    if (value.length < 8) {
+                      return 'Password must be at least 8 characters';
                     }
                     return null;
                   },
@@ -149,18 +184,49 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: const Text('Cancel'),
                               ),
                               ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Password reset link sent to your email!',
+                                onPressed: () async {
+                                  final email = resetEmailController.text
+                                      .trim();
+                                  if (email.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Please enter your email address',
+                                        ),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                    return;
+                                  }
+                                  try {
+                                    await _authService.sendPasswordReset(email);
+                                    if (!context.mounted) return;
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Password reset link sent to your email!',
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          AuthService.parseAuthError(e),
+                                        ),
+                                        backgroundColor: const Color(
+                                          0xFFCD3024,
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
+                                  backgroundColor: const Color(
+                                    0xFFCD3024,
+                                  ),
                                   foregroundColor: Colors.white,
                                 ),
                                 child: const Text('Send Link'),
@@ -172,20 +238,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: const Text(
                       'Forgot Password?',
-                      style: TextStyle(color: Color.fromARGB(255, 194, 47, 36)),
+                      style: TextStyle(color: Color(0xFFC22F24)),
                     ),
                   ),
                 ),
                 const SizedBox(height: 16),
 
                 ElevatedButton(
-                  onPressed: _handleLogin,
+                  onPressed: _isLoading ? null : _handleLogin,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: const Color.fromARGB(255, 194, 47, 36),
+                    backgroundColor: const Color(0xFFC22F24),
                     foregroundColor: Colors.white,
                   ),
-                  child: const Text('Login', style: TextStyle(fontSize: 16)),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text('Login', style: TextStyle(fontSize: 16)),
                 ),
                 const SizedBox(height: 16),
 
@@ -195,18 +270,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text("Don't have an account?"),
                     TextButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Sign up is currently invite-only or coming soon!',
-                            ),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignupScreen(),
                           ),
                         );
                       },
                       child: const Text(
                         'Sign Up',
                         style: TextStyle(
-                          color: Color.fromARGB(255, 194, 47, 36),
+                          color: Color(0xFFC22F24),
                           fontWeight: FontWeight.bold,
                         ),
                       ),

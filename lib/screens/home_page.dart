@@ -9,6 +9,8 @@ import 'package:vitalo/home_page/urgent_requests_section.dart';
 
 import 'create_profile.dart';
 import 'donor_profile.dart';
+import 'login_page.dart';
+import 'package:vitalo/services/auth_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,16 +22,51 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   void _navigateToProfile() {
     if (AppState.isDonor && AppState.donorName != null) {
+      String bloodGroup;
+      if (AppState.donorBloodGroup != null) {
+        bloodGroup = AppState.donorBloodGroup!;
+      } else {
+        bloodGroup = 'Unknown';
+      }
+
+      DateTime dateOfBirth;
+      if (AppState.donorDateOfBirth != null) {
+        dateOfBirth = AppState.donorDateOfBirth!;
+      } else {
+        dateOfBirth = DateTime(2000, 1, 1);
+      }
+
+      String sex;
+      if (AppState.donorSex != null) {
+        sex = AppState.donorSex!;
+      } else {
+        sex = 'Other';
+      }
+
+      double hemoglobinLevel;
+      if (AppState.donorHemoglobinLevel != null) {
+        hemoglobinLevel = AppState.donorHemoglobinLevel!;
+      } else {
+        hemoglobinLevel = 13.0;
+      }
+
+      String address;
+      if (AppState.donorAddress != null) {
+        address = AppState.donorAddress!;
+      } else {
+        address = 'Not specified';
+      }
+
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => DonorProfilePage(
             name: AppState.donorName!,
-            bloodGroup: AppState.donorBloodGroup ?? 'Unknown',
-            dateOfBirth: AppState.donorDateOfBirth ?? DateTime(2000, 1, 1),
-            sex: AppState.donorSex ?? 'Other',
-            hemoglobinLevel: AppState.donorHemoglobinLevel ?? 13.0,
-            address: AppState.donorAddress ?? 'Not specified',
+            bloodGroup: bloodGroup,
+            dateOfBirth: dateOfBirth,
+            sex: sex,
+            hemoglobinLevel: hemoglobinLevel,
+            address: address,
             lastDonationOption: AppState.donorLastDonationOption,
             lastDonationDate: AppState.donorLastDonationDate,
           ),
@@ -43,12 +80,60 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _confirmLogout() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.logout_rounded, color: Colors.red),
+            SizedBox(width: 8),
+            Text('Log Out'),
+          ],
+        ),
+        content: const Text('Are you sure you want to log out of Vitalo?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await AuthService().signOut();
+              AppState.isDonor = false;
+              AppState.donorName = null;
+              AppState.donorBloodGroup = null;
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Logged out successfully'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (route) => false,
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Log Out'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 205, 48, 36),
+        backgroundColor: const Color(0xFFCD3024),
         foregroundColor: Colors.white,
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -87,7 +172,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () => HomeSheets.showNotifications(context),
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 14.0, left: 4),
+            padding: const EdgeInsets.only(right: 4.0, left: 4),
             child: GestureDetector(
               onTap: _navigateToProfile,
               child: const CircleAvatar(
@@ -100,6 +185,12 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: Colors.white),
+            tooltip: 'Log Out',
+            onPressed: _confirmLogout,
+          ),
+          const SizedBox(width: 4),
         ],
       ),
       body: SafeArea(

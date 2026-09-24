@@ -78,8 +78,22 @@ class _CreateProfileState extends State<CreateProfile> {
       return;
     }
 
-    final weight = double.tryParse(_weightController.text) ?? 0;
-    final ironLevel = double.tryParse(_ironLevelController.text) ?? 0;
+    double weight;
+    final parsedWeight = double.tryParse(_weightController.text);
+
+    if (parsedWeight != null) {
+      weight = parsedWeight;
+    } else {
+      weight = 0;
+    }
+
+    double ironLevel;
+    final parsedIronLevel = double.tryParse(_ironLevelController.text);
+    if (parsedIronLevel != null) {
+      ironLevel = parsedIronLevel;
+    } else {
+      ironLevel = 0;
+    }
 
     final eligible = DonorEligibility.isEligible(
       dateOfBirth: _dateOfBirth,
@@ -130,7 +144,7 @@ class _CreateProfileState extends State<CreateProfile> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Donor Profile'),
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFFCD3024),
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -235,7 +249,7 @@ class _CreateProfileState extends State<CreateProfile> {
                 onPressed: _submitForm,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Colors.red,
+                  backgroundColor: const Color(0xFFCD3024),
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Submit', style: TextStyle(fontSize: 16)),

@@ -39,7 +39,11 @@ class _EligibleDonorsPageState extends State<EligibleDonorsPage> {
   @override
   void initState() {
     super.initState();
-    _selectedBloodType = widget.initialBloodTypeFilter ?? 'All';
+    if (widget.initialBloodTypeFilter != null) {
+      _selectedBloodType = widget.initialBloodTypeFilter!;
+    } else {
+      _selectedBloodType = 'All';
+    }
   }
 
   List<Donor> get _filteredDonors {
@@ -54,6 +58,88 @@ class _EligibleDonorsPageState extends State<EligibleDonorsPage> {
   @override
   Widget build(BuildContext context) {
     final filtered = _filteredDonors;
+    Widget listContent;
+
+    if (filtered.isEmpty) {
+      listContent = Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.person_off_outlined,
+              size: 64,
+              color: Colors.grey.shade400,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'No donors found for $_selectedBloodType',
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+            ),
+          ],
+        ),
+      );
+    } else {
+      listContent = ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: filtered.length,
+        itemBuilder: (context, index) {
+          final donor = filtered[index];
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(12),
+              leading: CircleAvatar(
+                backgroundColor: Colors.red.withValues(alpha: 0.1),
+                child: const Icon(Icons.person, color: Colors.red),
+              ),
+              title: Text(
+                donor.name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text('${donor.age} years old'),
+              ),
+              trailing: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      donor.bloodType,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '${donor.distanceKm} km away',
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+              onTap: () {
+                _showDonorContactDialog(context, donor);
+              },
+            ),
+          );
+        },
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -61,6 +147,7 @@ class _EligibleDonorsPageState extends State<EligibleDonorsPage> {
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
       ),
+
       body: Column(
         children: [
           Container(
@@ -108,92 +195,7 @@ class _EligibleDonorsPageState extends State<EligibleDonorsPage> {
           ),
           const Divider(height: 1),
 
-          Expanded(
-            child: filtered.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.person_off_outlined,
-                          size: 64,
-                          color: Colors.grey.shade400,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'No donors found for $_selectedBloodType',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: filtered.length,
-                    itemBuilder: (context, index) {
-                      final donor = filtered[index];
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(12),
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.red.withValues(alpha: 0.1),
-                            child: const Icon(Icons.person, color: Colors.red),
-                          ),
-                          title: Text(
-                            donor.name,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Text('${donor.age} years old'),
-                          ),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  donor.bloodType,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                '${donor.distanceKm} km away',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            _showDonorContactDialog(context, donor);
-                          },
-                        ),
-                      );
-                    },
-                  ),
-          ),
+          Expanded(child: listContent),
         ],
       ),
     );

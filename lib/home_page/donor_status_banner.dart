@@ -6,10 +6,7 @@ import 'package:vitalo/screens/create_profile.dart';
 class DonorStatusBanner extends StatelessWidget {
   final VoidCallback onNavigateToProfile;
 
-  const DonorStatusBanner({
-    super.key,
-    required this.onNavigateToProfile,
-  });
+  const DonorStatusBanner({super.key, required this.onNavigateToProfile});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +24,10 @@ class DonorStatusBanner extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
+          border: Border.all(color: const Color(0xFFCD3024)),
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withValues(alpha: 0.05),
+              color: const Color(0xFFCD3024),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -41,10 +38,14 @@ class DonorStatusBanner extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.1),
+                color: const Color(0xFFCD3024).withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.bloodtype, color: Colors.red, size: 30),
+              child: const Icon(
+                Icons.bloodtype,
+                color: Color(0xFFCD3024),
+                size: 30,
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -100,7 +101,7 @@ class DonorStatusBanner extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.arrow_forward_ios, size: 16),
-              color: Colors.red,
+              color: const Color(0xFFCD3024),
               onPressed: onNavigateToProfile,
             ),
           ],
@@ -112,14 +113,17 @@ class DonorStatusBanner extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.red.shade700, Colors.red.shade500],
+            colors: [
+              const Color(0xFFCD3024),
+              const Color(0xFFCD3024).withValues(alpha: 0.8),
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withValues(alpha: 0.3),
+              color: const Color(0xFFCD3024),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -159,7 +163,7 @@ class DonorStatusBanner extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: Colors.red,
+                      foregroundColor: const Color(0xFFCD3024),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 8,

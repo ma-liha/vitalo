@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/Users/User/Desktop/vitalo/windows"
+    "cmake.sourceDirectory": "C:/Users/User/Desktop/vitalo/windows",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

@@ -81,7 +81,7 @@ class UrgentRequestsSection extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.red,
+                      color: const Color(0xFFCD3024),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -182,7 +182,7 @@ class UrgentRequestsSection extends StatelessWidget {
                     child: Text(
                       request.timeRequirement,
                       style: const TextStyle(
-                        color: Colors.red,
+                        color: Color(0xFFCD3024),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -227,7 +227,7 @@ class UrgentRequestsSection extends StatelessWidget {
                       },
                       label: const Text('Donate blood'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: const Color(0xFFCD3024),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
@@ -301,7 +301,7 @@ class UrgentRequestsSection extends StatelessWidget {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.red,
+                          color: const Color(0xFFCD3024),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -421,7 +421,7 @@ class UrgentRequestsSection extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () => showDetails(context, request),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
+                          backgroundColor: const Color(0xFFCD3024),
                           foregroundColor: Colors.white,
                           visualDensity: VisualDensity.compact,
                           shape: RoundedRectangleBorder(

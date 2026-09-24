@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "18330072167",
+    "project_id": "vitalo-ead4a",
+    "storage_bucket": "vitalo-ead4a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18330072167:android:b959065f662ddb93e390c2",
+        "android_client_info": {
+          "package_name": "com.example.vitalo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4CV0haIjofyl9TtoMMaxbU7T4MKhyIMQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

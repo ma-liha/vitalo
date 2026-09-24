@@ -46,7 +46,7 @@ class QuickActionsGrid extends StatelessWidget {
               icon: Icons.campaign_rounded,
               title: 'Request Blood',
               subtitle: 'Create request',
-              color: Colors.blue,
+              color: const Color.fromARGB(255, 24, 13, 170),
               onTap: () {
                 Navigator.push(
                   context,

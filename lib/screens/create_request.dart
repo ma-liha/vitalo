@@ -27,6 +27,7 @@ class _CreateRequestState extends State<CreateRequest> {
     'O+',
     'O-',
   ];
+
   final List<String> _urgencyLevels = ['Low', 'Medium', 'High', 'Critical'];
 
   @override
@@ -50,7 +51,7 @@ class _CreateRequestState extends State<CreateRequest> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Donation Request'),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF180DAA),
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -144,7 +145,7 @@ class _CreateRequestState extends State<CreateRequest> {
                 onPressed: _submitForm,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: const Color(0xFF180DAA),
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Submit', style: TextStyle(fontSize: 16)),
